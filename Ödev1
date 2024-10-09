@@ -1,0 +1,153 @@
+using System;
+using System.Collections.Generic;
+
+namespace VehicleManagementSystem
+{
+    // Araç sınıfı
+    class Vehicle
+    {
+        public string VehicleType { get; private set; }
+        public string Model { get; private set; }
+        public int Year { get; private set; }
+        public string Brand { get; private set; }
+        public string AcquisitionDate { get; private set; }
+        public double AcquisitionPrice { get; private set; }
+        public string ChassisNumber { get; private set; }
+        private List<string> previousOwners;
+
+        public Vehicle(string vehicleType, string model, int year, string brand, string acquisitionDate, double acquisitionPrice, string chassisNumber)
+        {
+            VehicleType = vehicleType;
+            Model = model;
+            Year = year;
+            Brand = brand;
+            AcquisitionDate = acquisitionDate;
+            AcquisitionPrice = acquisitionPrice;
+            ChassisNumber = chassisNumber;
+            previousOwners = new List<string>();
+        }
+
+        // Sahiplik bilgisi ekleme
+        public void AddPreviousOwner(string ownerName)
+        {
+            previousOwners.Add(ownerName);
+        }
+
+        // Son sahibin adını döndürme
+        public string GetPreviousOwner()
+        {
+            if (previousOwners.Count > 0)
+                return previousOwners[previousOwners.Count - 1];
+            return "Unknown";
+        }
+    }
+
+    // Kişi sınıfı
+    class Person
+    {
+        private string Name { get; set; }
+        private string Surname { get; set; }
+        private int BirthYear { get; set; }
+        private string IdNumber { get; set; }
+        private List<Vehicle> vehicles;
+
+        public Person(string name, string surname, int birthYear, string idNumber)
+        {
+            Name = name;
+            Surname = surname;
+            BirthYear = birthYear;
+            IdNumber = idNumber;
+            vehicles = new List<Vehicle>();
+        }
+
+        // Araç ekleme
+        public void AddVehicle(Vehicle vehicle)
+        {
+            vehicles.Add(vehicle);
+        }
+
+        // Araçları listeleme
+        public void ListVehicles()
+        {
+            foreach (var vehicle in vehicles)
+            {
+                Console.WriteLine($"Şasi Numarası: {vehicle.ChassisNumber}");
+                Console.WriteLine($"Sahibi: {Name} {Surname}");
+                Console.WriteLine($"Edinme Tarihi: {vehicle.AcquisitionDate}");
+                Console.WriteLine($"Model Yılı: {vehicle.GetPreviousOwner()}");
+                Console.WriteLine(new string('-', 20));
+            }
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            // Kullanıcıdan kişi bilgileri alalım
+            Console.WriteLine("Kişinin adını girin:");
+            string name = Console.ReadLine();
+
+            Console.WriteLine("Kişinin soyadını girin:");
+            string surname = Console.ReadLine();
+
+            Console.WriteLine("Kişinin doğum yılını girin:");
+            int birthYear = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Kişinin TC kimlik numarasını girin:");
+            string idNumber = Console.ReadLine();
+
+            Person person = new Person(name, surname, birthYear, idNumber);
+
+            // Kullanıcıdan araç bilgileri alalım
+            for (int i = 1; i <= 2; i++)
+            {
+                Console.WriteLine($"\nAraç {i} bilgilerini girin:");
+
+                Console.WriteLine("Araç türü (Taksi, Kamyon, Otobüs vb.):");
+                string vehicleType = Console.ReadLine();
+
+                Console.WriteLine("Araç modelini girin:");
+                string model = Console.ReadLine();
+
+                Console.WriteLine("Araç model yılını girin:");
+                int year = int.Parse(Console.ReadLine());
+
+                Console.WriteLine("Araç markasını girin:");
+                string brand = Console.ReadLine();
+
+                Console.WriteLine("Aracı edinme tarihini girin (dd.mm.yyyy):");
+                string acquisitionDate = Console.ReadLine();
+
+                Console.WriteLine("Aracı edinme fiyatını girin:");
+                double acquisitionPrice = double.Parse(Console.ReadLine());
+
+                Console.WriteLine("Aracın şasi numarasını girin:");
+                string chassisNumber = Console.ReadLine();
+
+                // Yeni araç oluşturma
+                Vehicle vehicle = new Vehicle(vehicleType, model, year, brand, acquisitionDate, acquisitionPrice, chassisNumber);
+
+                // Önceki sahiplik bilgilerini ekleyelim
+                Console.WriteLine($"Aracın kaç tane önceki sahibi var?");
+                int previousOwnersCount = int.Parse(Console.ReadLine());
+
+                for (int j = 1; j <= previousOwnersCount; j++)
+                {
+                    Console.WriteLine($"Önceki Sahip {j} adını girin:");
+                    string previousOwner = Console.ReadLine();
+                    vehicle.AddPreviousOwner(previousOwner);
+                }
+
+                // Kişiye aracı ekleyelim
+                person.AddVehicle(vehicle);
+            }
+
+            // Araçları listele
+            Console.WriteLine("\nKişinin araçları listeleniyor...");
+            person.ListVehicles();
+
+            Console.ReadLine(); // Konsolun kapanmaması için bekletiyoruz.
+        }
+    }
+}
